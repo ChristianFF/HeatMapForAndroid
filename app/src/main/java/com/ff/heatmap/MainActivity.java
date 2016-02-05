@@ -1,6 +1,7 @@
 package com.ff.heatmap;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -39,12 +40,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("确定", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                List<WeightedLatLng> data = new ArrayList<>();
-                                for (int i = 0; i < 100; i++) {
-                                    data.add(new WeightedLatLng((int) (Math.random() * screenWidth),
-                                            (int) (Math.random() * screenHeight),
-                                            Math.random() * 100));
-                                }
+                                List<WeightedLatLng> data = generateHeatMapData();
                                 heatMap.setWeightedData(data);
                                 imageView.setImageBitmap(heatMap.generateMap());
                             }
@@ -54,19 +50,29 @@ public class MainActivity extends AppCompatActivity {
 
         imageView = (ImageView) findViewById(R.id.image);
 
+        measureScreen();
+        List<WeightedLatLng> data = generateHeatMapData();
+        heatMap = new HeatMap.Builder().weightedData(data).width(screenWidth).height(screenHeight).build();
+        imageView.setImageBitmap(heatMap.generateMap());
+
+    }
+
+    private void measureScreen() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         screenWidth = displayMetrics.widthPixels;
         screenHeight = displayMetrics.heightPixels;
+    }
+
+    @NonNull
+    private List<WeightedLatLng> generateHeatMapData() {
         List<WeightedLatLng> data = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             data.add(new WeightedLatLng((int) (Math.random() * screenWidth),
                     (int) (Math.random() * screenHeight),
                     Math.random() * 100));
         }
-        heatMap = new HeatMap.Builder().weightedData(data).width(screenWidth).height(screenHeight).build();
-        imageView.setImageBitmap(heatMap.generateMap());
-
+        return data;
     }
 
     @Override
