@@ -4,6 +4,9 @@ import android.graphics.Color;
 
 import java.util.HashMap;
 
+/**
+ * A class to generate a color map of given size from a given array of colors and the fractions
+ */
 public class Gradient {
 
     private static final int DEFAULT_COLOR_MAP_SIZE = 1000;
@@ -17,13 +20,13 @@ public class Gradient {
 
     public Gradient(int[] colors, float[] startPoints, int colorMapSize) {
         if (colors.length != startPoints.length) {
-            throw new IllegalArgumentException("colors和startPoints数组必须具有相同的长度");
+            throw new IllegalArgumentException("colors and startPoints must have same length");
         } else if (colors.length == 0) {
-            throw new IllegalArgumentException("颜色数组为空");
+            throw new IllegalArgumentException("no colors have been defined");
         }
         for (int i = 1; i < startPoints.length; i++) {
             if (startPoints[i] <= startPoints[i - 1]) {
-                throw new IllegalArgumentException("startPoints数组必须为升序");
+                throw new IllegalArgumentException("startPoints should be in increasing order");
             }
         }
         this.colorMapSize = colorMapSize;
@@ -58,16 +61,20 @@ public class Gradient {
 
     private HashMap<Integer, ColorInterval> generateColorIntervals() {
         HashMap<Integer, ColorInterval> colorIntervals = new HashMap<>();
+        // Create first color if not already created
+        // The initial color is transparent by default
         if (startPoints[0] != 0) {
             int initialColor = Color.argb(
                     0, Color.red(colors[0]), Color.green(colors[0]), Color.blue(colors[0]));
             colorIntervals.put(0, new ColorInterval(initialColor, colors[0], colorMapSize * startPoints[0]));
         }
+        // Generate color intervals
         for (int i = 1; i < colors.length; i++) {
             colorIntervals.put(((int) (colorMapSize * startPoints[i - 1])),
                     new ColorInterval(colors[i - 1], colors[i],
                             (colorMapSize * (startPoints[i] - startPoints[i - 1]))));
         }
+        // If color for 100% intensity is not given, the color of highest intensity is used.
         if (startPoints[startPoints.length - 1] != 1) {
             int i = startPoints.length - 1;
             colorIntervals.put(((int) (colorMapSize * startPoints[i])),

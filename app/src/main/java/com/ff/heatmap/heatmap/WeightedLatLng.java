@@ -1,16 +1,17 @@
 package com.ff.heatmap.heatmap;
 
 /**
- * 带权值的经纬度位置点,由于不好接入GoogleMap API，点位置暂时直接用屏幕坐标代替
+ * Point coordinates of the LatLng and the intensity
  */
 public class WeightedLatLng {
+
     /**
-     * 默认权值1.0
+     * default intensity
      */
     private static final double DEFAULT_INTENSITY = 1.0;
 
 //    /**
-//     * 经纬度
+//     * latitude and longitude
 //     */
 //    public final LatLng latLng;
 
@@ -19,33 +20,33 @@ public class WeightedLatLng {
     public final int y;
 
     /**
-     * 权值
+     * intensity must be over zero
      */
     public final double intensity;
 
-    //    /**
-//     * 构造函数
-//     *
-//     * @param latlng    地理位置
-//     * @param intensity 权值，大于零；两个权值等于一的位置点等同于一个权值等于二的点
-//     */
+//
 //    public WeightedLatLng(LatLng latlng, double intensity) {
 //        this.latLng = latlng;
+//        if (intensity < 0) {
+//            throw new IllegalStateException("Intensity must be over zero!");
+//        }
 //        this.intensity = intensity;
 //    }
-    public WeightedLatLng(int x, int y, double intensity) {
-        this.x = x;
-        this.y = y;
-        this.intensity = intensity;
-    }
 
-//    /**
-//     * 构造函数，使用默认的权值
-//     *
-//     * @param latlng 地理位置
-//     */
 //    public WeightedLatLng(LatLng latlng) {
 //        this.latLng = latlng;
 //        this.intensity = DEFAULT_INTENSITY;
 //    }
+
+    //I don't have points of geo-coordinates,so I use points of screen coordinates instead
+    //If you want generate a heat map use LatLng data,you should use the constructor above this
+    //And you should transform LatLng into screen coordinates when generate the heat map
+    public WeightedLatLng(int x, int y, double intensity) {
+        this.x = x;
+        this.y = y;
+        if (intensity < 0) {
+            throw new IllegalStateException("Intensity must be over zero!");
+        }
+        this.intensity = intensity;
+    }
 }

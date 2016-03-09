@@ -9,76 +9,35 @@ import java.util.Collection;
  * 热力图
  */
 public class HeatMap {
-    /**
-     * 默认透明度
-     */
+
     private static final double DEFAULT_OPACITY = 0.6;
 
-    /**
-     * 默认点半径
-     */
     private static final int DEFAULT_RADIUS = 36;
 
-    /**
-     * 默认渐变色
-     */
     private static final Gradient DEFAULT_GRADIENT = new Gradient(
             new int[]{Color.TRANSPARENT, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED},
             new float[]{0f, 0.25f, 0.55f, 0.85f, 1f});
 
-    /**
-     * 最小半径值
-     */
     private static final int MIN_RADIUS = 10;
 
-    /**
-     * 最大半径值
-     */
     private static final int MAX_RADIUS = 50;
 
-    /**
-     * 权重点数据集合
-     */
     private Collection<WeightedLatLng> mData;
 
-    /**
-     * 点半径
-     */
     private int mRadius;
 
-    /**
-     * 热力图渐变色
-     */
     private Gradient mGradient;
 
-    /**
-     * 色带图
-     */
     private int[] mColorMap;
 
-    /**
-     * 高斯核
-     */
     private double[] mKernel;
 
-    /**
-     * 透明度
-     */
     private double mOpacity;
 
-    /**
-     * 最大权重值
-     */
     private double mMaxIntensity;
 
-    /**
-     * 热力图宽度
-     */
     private int mWidth;
 
-    /**
-     * 热力图高度
-     */
     private int mHeight;
 
     private HeatMap(Builder builder) {
@@ -198,6 +157,7 @@ public class HeatMap {
     public Bitmap generateMap() {
         double[][] intensity = new double[mWidth + mRadius * 2][mHeight + mRadius * 2];
         for (WeightedLatLng w : mData) {
+            //if you are using LatLng,transform them into screen coordinates
             int bucketX = w.x;
             int bucketY = w.y;
             if (bucketX < mWidth && bucketX >= 0
