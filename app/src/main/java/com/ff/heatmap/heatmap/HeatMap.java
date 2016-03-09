@@ -188,12 +188,10 @@ public class HeatMap {
     }
 
     public void setWeightedData(Collection<WeightedLatLng> data) {
-        mData = data;
-
-        if (mData.isEmpty()) {
+        if (data.isEmpty()) {
             throw new IllegalArgumentException("No input points.");
         }
-
+        mData = data;
         mMaxIntensity = getMaxIntensities();
     }
 

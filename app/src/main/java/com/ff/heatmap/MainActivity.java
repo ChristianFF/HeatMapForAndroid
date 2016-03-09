@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.ff.heatmap.heatmap.HeatMap;
+import com.ff.heatmap.heatmap.HeatMapOverlay;
 import com.ff.heatmap.heatmap.WeightedLatLng;
 
 import java.util.ArrayList;
@@ -20,23 +21,27 @@ public class MainActivity extends AppCompatActivity {
 
     private int screenWidth;
     private int screenHeight;
-    private HeatMap heatMap;
     private ImageView imageView;
+    private HeatMap heatMap;
+    private HeatMapOverlay heatMapOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("热力图");
+        imageView = (ImageView) findViewById(R.id.image);
+        FloatingActionButton fab1 = (FloatingActionButton) findViewById(R.id.fab1);
+        FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("HeatMap");
+
+        fab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "生成热力图数据", Snackbar.LENGTH_LONG)
-                        .setAction("确定", new View.OnClickListener() {
+                Snackbar.make(view, "regenerate heatmap data", Snackbar.LENGTH_LONG)
+                        .setAction("ok", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 List<WeightedLatLng> data = generateHeatMapData();
@@ -47,13 +52,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        imageView = (ImageView) findViewById(R.id.image);
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Regenerate HeatMapOverlay Data", Snackbar.LENGTH_LONG)
+                        .setAction("ok", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                List<WeightedLatLng> data = generateHeatMapData();
+                                heatMapOverlay.setWeightedData(data);
+                                imageView.setImageBitmap(heatMapOverlay.generateMap());
+                            }
+                        }).show();
+            }
+        });
+
 
         measureScreen();
         List<WeightedLatLng> data = generateHeatMapData();
         heatMap = new HeatMap.Builder().weightedData(data).radius(35).width(screenWidth).height(screenHeight).build();
+        heatMapOverlay = new HeatMapOverlay.Builder().weightedData(data).radius(35).width(screenWidth).height(screenHeight).build();
         imageView.setImageBitmap(heatMap.generateMap());
-
     }
 
     private void measureScreen() {
